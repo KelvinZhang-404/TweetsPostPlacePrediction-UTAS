@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?><process version="9.5.000">
+  <context>
+    <input/>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="9.5.000" expanded="true" name="Process">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true">
+      <operator activated="true" class="read_excel" compatibility="9.5.000" expanded="true" height="68" name="Read Excel" width="90" x="45" y="85">
+        <parameter key="excel_file" value="/Users/lianxuezhang/Dropbox/各种资料/UTAS/2020Spring/KIT606/assignment/TweetData.xlsx"/>
+        <parameter key="sheet_selection" value="sheet number"/>
+        <parameter key="sheet_number" value="3"/>
+        <parameter key="imported_cell_range" value="A1"/>
+        <parameter key="encoding" value="SYSTEM"/>
+        <parameter key="first_row_as_names" value="true"/>
+        <list key="annotations"/>
+        <parameter key="date_format" value=""/>
+        <parameter key="time_zone" value="SYSTEM"/>
+        <parameter key="locale" value="English (United States)"/>
+        <parameter key="read_all_values_as_polynominal" value="false"/>
+        <list key="data_set_meta_data_information">
+          <parameter key="0" value="tweetid.true.real.attribute"/>
+          <parameter key="1" value="Column1\.coordinates\.type.true.polynominal.attribute"/>
+          <parameter key="2" value="Column1\.geo\.coordinates.true.polynominal.attribute"/>
+          <parameter key="3" value="Column1\.place\.country.true.polynominal.attribute"/>
+          <parameter key="4" value="Column1\.place\.name.true.polynominal.attribute"/>
+          <parameter key="5" value="userid.true.polynominal.attribute"/>
+          <parameter key="6" value="Tweet Language.true.polynominal.attribute"/>
+          <parameter key="7" value="Tweet.true.polynominal.attribute"/>
+        </list>
+        <parameter key="read_not_matching_values_as_missings" value="false"/>
+        <parameter key="datamanagement" value="double_array"/>
+        <parameter key="data_management" value="auto"/>
+      </operator>
+      <operator activated="true" class="sample" compatibility="9.5.000" expanded="true" height="82" name="Sample" width="90" x="179" y="85">
+        <parameter key="sample" value="relative"/>
+        <parameter key="balance_data" value="false"/>
+        <parameter key="sample_size" value="100"/>
+        <parameter key="sample_ratio" value="0.2"/>
+        <parameter key="sample_probability" value="0.1"/>
+        <list key="sample_size_per_class"/>
+        <list key="sample_ratio_per_class"/>
+        <list key="sample_probability_per_class"/>
+        <parameter key="use_local_random_seed" value="false"/>
+        <parameter key="local_random_seed" value="1992"/>
+      </operator>
+      <operator activated="true" class="subprocess" compatibility="9.5.000" expanded="true" height="82" name="text processing" width="90" x="380" y="85">
+        <process expanded="true">
+          <operator activated="true" class="select_attributes" compatibility="9.5.000" expanded="true" height="82" name="Select Text Column (2)" width="90" x="45" y="34">
+            <parameter key="attribute_filter_type" value="subset"/>
+            <parameter key="attribute" value="Tweet"/>
+            <parameter key="attributes" value="|Tweet|tweetid"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+          </operator>
+          <operator activated="true" class="nominal_to_text" compatibility="9.5.000" expanded="true" height="82" name="Nominal to Text (2)" width="90" x="179" y="34">
+            <parameter key="attribute_filter_type" value="all"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value=""/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="nominal"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="file_path"/>
+            <parameter key="block_type" value="single_value"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="single_value"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+          </operator>
+          <operator activated="true" class="text:process_document_from_data" compatibility="8.2.000" expanded="true" height="82" name="Process Documents from Data (2)" width="90" x="313" y="34">
+            <parameter key="create_word_vector" value="true"/>
+            <parameter key="vector_creation" value="TF-IDF"/>
+            <parameter key="add_meta_information" value="true"/>
+            <parameter key="keep_text" value="false"/>
+            <parameter key="prune_method" value="percentual"/>
+            <parameter key="prune_below_percent" value="0.3"/>
+            <parameter key="prune_above_percent" value="10.0"/>
+            <parameter key="prune_below_rank" value="0.05"/>
+            <parameter key="prune_above_rank" value="0.95"/>
+            <parameter key="datamanagement" value="double_sparse_array"/>
+            <parameter key="data_management" value="auto"/>
+            <parameter key="select_attributes_and_weights" value="false"/>
+            <list key="specify_weights"/>
+            <process expanded="true">
+              <operator activated="true" class="text:tokenize" compatibility="8.2.000" expanded="true" height="68" name="Tokenize (3)" width="90" x="45" y="34">
+                <parameter key="mode" value="non letters"/>
+                <parameter key="characters" value=".:"/>
+                <parameter key="language" value="English"/>
+                <parameter key="max_token_length" value="3"/>
+              </operator>
+              <operator activated="true" class="text:transform_cases" compatibility="8.2.000" expanded="true" height="68" name="Transform Cases (3)" width="90" x="179" y="34">
+                <parameter key="transform_to" value="lower case"/>
+              </operator>
+              <operator activated="true" class="retrieve" compatibility="9.5.000" expanded="true" height="68" name="Retrieve SLTK English Stopwords (3)" width="90" x="45" y="136">
+                <parameter key="repository_entry" value="//Community Samples/Community Data Sets/Text Mining Dictionaries/SLTK Language-Specific Stopword Lists/SLTK English Stopwords"/>
+              </operator>
+              <operator activated="true" class="retrieve" compatibility="9.5.000" expanded="true" height="68" name="Retrieve SLTK French Stopwords (3)" width="90" x="45" y="238">
+                <parameter key="repository_entry" value="//Community Samples/Community Data Sets/Text Mining Dictionaries/SLTK Language-Specific Stopword Lists/SLTK French Stopwords"/>
+              </operator>
+              <operator activated="true" class="retrieve" compatibility="9.5.000" expanded="true" height="68" name="Retrieve SLTK Portuguese Stopwords (3)" width="90" x="45" y="340">
+                <parameter key="repository_entry" value="//Community Samples/Community Data Sets/Text Mining Dictionaries/SLTK Language-Specific Stopword Lists/SLTK Portuguese Stopwords"/>
+              </operator>
+              <operator activated="true" class="retrieve" compatibility="9.5.000" expanded="true" height="68" name="Retrieve SLTK Spanish Stopwords (3)" width="90" x="45" y="442">
+                <parameter key="repository_entry" value="//Community Samples/Community Data Sets/Text Mining Dictionaries/SLTK Language-Specific Stopword Lists/SLTK Spanish Stopwords"/>
+              </operator>
+              <operator activated="true" class="text:combine_documents" compatibility="8.2.000" expanded="true" height="145" name="Combine Documents (3)" width="90" x="179" y="136"/>
+              <operator activated="true" class="text:write_document" compatibility="8.2.000" expanded="true" height="82" name="Write Document (3)" width="90" x="313" y="136">
+                <parameter key="overwrite" value="true"/>
+                <parameter key="encoding" value="SYSTEM"/>
+              </operator>
+              <operator activated="true" class="text:filter_stopwords_dictionary" compatibility="8.2.000" expanded="true" height="82" name="Filter Stopwords (3)" width="90" x="313" y="34">
+                <parameter key="case_sensitive" value="false"/>
+                <parameter key="encoding" value="SYSTEM"/>
+              </operator>
+              <operator activated="true" class="text:filter_by_length" compatibility="8.2.000" expanded="true" height="68" name="Filter Tokens (by Length) (3)" width="90" x="447" y="34">
+                <parameter key="min_chars" value="4"/>
+                <parameter key="max_chars" value="15"/>
+              </operator>
+              <operator activated="true" class="subprocess" compatibility="9.5.000" expanded="true" height="82" name="stem words (3)" width="90" x="581" y="34">
+                <process expanded="true">
+                  <operator activated="true" class="text:stem_snowball" compatibility="8.2.000" expanded="true" height="68" name="Stem (Snowball) Eng (3)" width="90" x="45" y="34">
+                    <parameter key="language" value="English"/>
+                  </operator>
+                  <operator activated="true" class="text:stem_snowball" compatibility="8.2.000" expanded="true" height="68" name="Stem (Snowball) Fre (3)" width="90" x="179" y="34">
+                    <parameter key="language" value="French"/>
+                  </operator>
+                  <operator activated="true" class="text:stem_snowball" compatibility="8.2.000" expanded="true" height="68" name="Stem (Snowball) Spa (3)" width="90" x="313" y="34">
+                    <parameter key="language" value="Spanish"/>
+                  </operator>
+                  <operator activated="true" class="text:stem_snowball" compatibility="8.2.000" expanded="true" height="68" name="Stem (Snowball) Por (3)" width="90" x="447" y="34">
+                    <parameter key="language" value="Portuguese"/>
+                  </operator>
+                  <connect from_port="in 1" to_op="Stem (Snowball) Eng (3)" to_port="document"/>
+                  <connect from_op="Stem (Snowball) Eng (3)" from_port="document" to_op="Stem (Snowball) Fre (3)" to_port="document"/>
+                  <connect from_op="Stem (Snowball) Fre (3)" from_port="document" to_op="Stem (Snowball) Spa (3)" to_port="document"/>
+                  <connect from_op="Stem (Snowball) Spa (3)" from_port="document" to_op="Stem (Snowball) Por (3)" to_port="document"/>
+                  <connect from_op="Stem (Snowball) Por (3)" from_port="document" to_port="out 1"/>
+                  <portSpacing port="source_in 1" spacing="0"/>
+                  <portSpacing port="source_in 2" spacing="0"/>
+                  <portSpacing port="sink_out 1" spacing="0"/>
+                  <portSpacing port="sink_out 2" spacing="0"/>
+                </process>
+              </operator>
+              <connect from_port="document" to_op="Tokenize (3)" to_port="document"/>
+              <connect from_op="Tokenize (3)" from_port="document" to_op="Transform Cases (3)" to_port="document"/>
+              <connect from_op="Transform Cases (3)" from_port="document" to_op="Filter Stopwords (3)" to_port="document"/>
+              <connect from_op="Retrieve SLTK English Stopwords (3)" from_port="output" to_op="Combine Documents (3)" to_port="documents 1"/>
+              <connect from_op="Retrieve SLTK French Stopwords (3)" from_port="output" to_op="Combine Documents (3)" to_port="documents 2"/>
+              <connect from_op="Retrieve SLTK Portuguese Stopwords (3)" from_port="output" to_op="Combine Documents (3)" to_port="documents 3"/>
+              <connect from_op="Retrieve SLTK Spanish Stopwords (3)" from_port="output" to_op="Combine Documents (3)" to_port="documents 4"/>
+              <connect from_op="Combine Documents (3)" from_port="document" to_op="Write Document (3)" to_port="document"/>
+              <connect from_op="Write Document (3)" from_port="file" to_op="Filter Stopwords (3)" to_port="file"/>
+              <connect from_op="Filter Stopwords (3)" from_port="document" to_op="Filter Tokens (by Length) (3)" to_port="document"/>
+              <connect from_op="Filter Tokens (by Length) (3)" from_port="document" to_op="stem words (3)" to_port="in 1"/>
+              <connect from_op="stem words (3)" from_port="out 1" to_port="document 1"/>
+              <portSpacing port="source_document" spacing="0"/>
+              <portSpacing port="sink_document 1" spacing="0"/>
+              <portSpacing port="sink_document 2" spacing="0"/>
+              <description align="center" color="yellow" colored="false" height="105" resized="false" width="180" x="204" y="310">different language stopwords are combined into a single dictionary</description>
+              <description align="center" color="yellow" colored="false" height="105" resized="false" width="180" x="552" y="143">Stem the words sequentially.</description>
+            </process>
+          </operator>
+          <operator activated="true" class="text:wordlist_to_data" compatibility="8.2.000" expanded="true" height="82" name="WordList to Data" width="90" x="447" y="34"/>
+          <operator activated="true" class="filter_examples" compatibility="9.5.000" expanded="true" height="103" name="Filter Examples" width="90" x="581" y="34">
+            <parameter key="parameter_expression" value=""/>
+            <parameter key="condition_class" value="custom_filters"/>
+            <parameter key="invert_filter" value="false"/>
+            <list key="filters_list">
+              <parameter key="filters_entry_key" value="in documents.gt.10"/>
+            </list>
+            <parameter key="filters_logic_and" value="true"/>
+            <parameter key="filters_check_metadata" value="true"/>
+          </operator>
+          <connect from_port="in 1" to_op="Select Text Column (2)" to_port="example set input"/>
+          <connect from_op="Select Text Column (2)" from_port="example set output" to_op="Nominal to Text (2)" to_port="example set input"/>
+          <connect from_op="Nominal to Text (2)" from_port="example set output" to_op="Process Documents from Data (2)" to_port="example set"/>
+          <connect from_op="Process Documents from Data (2)" from_port="word list" to_op="WordList to Data" to_port="word list"/>
+          <connect from_op="WordList to Data" from_port="example set" to_op="Filter Examples" to_port="example set input"/>
+          <connect from_op="Filter Examples" from_port="example set output" to_port="out 1"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="source_in 2" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+        </process>
+      </operator>
+      <connect from_op="Read Excel" from_port="output" to_op="Sample" to_port="example set input"/>
+      <connect from_op="Sample" from_port="example set output" to_op="text processing" to_port="in 1"/>
+      <connect from_op="text processing" from_port="out 1" to_port="result 1"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+      <description align="center" color="yellow" colored="false" height="60" resized="true" width="433" x="46" y="197">Used for creating a wordcloud plot to analyse the frequence of the words.</description>
+    </process>
+  </operator>
+</process>
